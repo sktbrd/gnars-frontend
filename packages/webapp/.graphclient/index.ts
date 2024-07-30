@@ -3533,7 +3533,7 @@ export type ResolversParentTypes = ResolversObject<{
   _Meta_: _Meta_;
 }>;
 
-export type entityDirectiveArgs = { };
+export type entityDirectiveArgs = {};
 
 export type entityDirectiveResolver<Result, Parent, ContextType = MeshContext, Args = entityDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
@@ -3935,10 +3935,10 @@ const baseDir = pathModule.join(pathModule.dirname(fileURLToPath(import.meta.url
 
 const importFn: ImportFn = <T>(moduleId: string) => {
   const relativeModuleId = (pathModule.isAbsolute(moduleId) ? pathModule.relative(baseDir, moduleId) : moduleId).split('\\').join('/').replace(baseDir + '/', '');
-  switch(relativeModuleId) {
+  switch (relativeModuleId) {
     case ".graphclient/sources/gnars/introspectionSchema":
       return import("./sources/gnars/introspectionSchema") as T;
-    
+
     default:
       return Promise.reject(new Error(`Cannot find module '${relativeModuleId}'.`));
   }
@@ -3955,66 +3955,66 @@ const rootStore = new MeshStore('.graphclient', new FsStoreStorageAdapter({
 
 export const rawServeConfig: YamlConfig.Config['serve'] = undefined as any
 export async function getMeshOptions(): Promise<GetMeshOptions> {
-const pubsub = new PubSub();
-const sourcesStore = rootStore.child('sources');
-const logger = new DefaultLogger("GraphClient");
-const cache = new (MeshCache as any)({
-      ...({} as any),
-      importFn,
-      store: rootStore.child('cache'),
-      pubsub,
-      logger,
-    } as any)
+  const pubsub = new PubSub();
+  const sourcesStore = rootStore.child('sources');
+  const logger = new DefaultLogger("GraphClient");
+  const cache = new (MeshCache as any)({
+    ...({} as any),
+    importFn,
+    store: rootStore.child('cache'),
+    pubsub,
+    logger,
+  } as any)
 
-const sources: MeshResolvedSource[] = [];
-const transforms: MeshTransform[] = [];
-const additionalEnvelopPlugins: MeshPlugin<any>[] = [];
-const gnarsTransforms = [];
-const additionalTypeDefs = [] as any[];
-const gnarsHandler = new GraphqlHandler({
-              name: "gnars",
-              config: {"endpoint":"https://api.studio.thegraph.com/query/84925/gnars-mainnet/version/latest"},
-              baseDir,
-              cache,
-              pubsub,
-              store: sourcesStore.child("gnars"),
-              logger: logger.child("gnars"),
-              importFn,
-            });
-additionalEnvelopPlugins[0] = await UsePollingLive({
-          ...({
-  "defaultInterval": 12000
-}),
-          logger: logger.child("pollingLive"),
-          cache,
-          pubsub,
-          baseDir,
-          importFn,
-        })
-gnarsTransforms[0] = new BlockTrackingTransform({
-                  apiName: "gnars",
-                  config: {"validateSchema":true},
-                  baseDir,
-                  cache,
-                  pubsub,
-                  importFn,
-                  logger,
-                });
-sources[0] = {
-          name: 'gnars',
-          handler: gnarsHandler,
-          transforms: gnarsTransforms
-        }
-const additionalResolvers = await Promise.all([
-        import("../queries/resolvers")
-            .then(m => m.resolvers || m.default || m)
-      ]);
-const merger = new(BareMerger as any)({
-        cache,
-        pubsub,
-        logger: logger.child('bareMerger'),
-        store: rootStore.child('bareMerger')
-      })
+  const sources: MeshResolvedSource[] = [];
+  const transforms: MeshTransform[] = [];
+  const additionalEnvelopPlugins: MeshPlugin<any>[] = [];
+  const gnarsTransforms = [];
+  const additionalTypeDefs = [] as any[];
+  const gnarsHandler = new GraphqlHandler({
+    name: "gnars",
+    config: { "endpoint": "https://api.goldsky.com/api/public/project_clwh32mvalyh201vi1ck71seq/subgraphs/gnars-mainnet/latest/gn" },
+    baseDir,
+    cache,
+    pubsub,
+    store: sourcesStore.child("gnars"),
+    logger: logger.child("gnars"),
+    importFn,
+  });
+  additionalEnvelopPlugins[0] = await UsePollingLive({
+    ...({
+      "defaultInterval": 12000
+    }),
+    logger: logger.child("pollingLive"),
+    cache,
+    pubsub,
+    baseDir,
+    importFn,
+  })
+  gnarsTransforms[0] = new BlockTrackingTransform({
+    apiName: "gnars",
+    config: { "validateSchema": true },
+    baseDir,
+    cache,
+    pubsub,
+    importFn,
+    logger,
+  });
+  sources[0] = {
+    name: 'gnars',
+    handler: gnarsHandler,
+    transforms: gnarsTransforms
+  }
+  const additionalResolvers = await Promise.all([
+    import("../queries/resolvers")
+      .then(m => m.resolvers || m.default || m)
+  ]);
+  const merger = new (BareMerger as any)({
+    cache,
+    pubsub,
+    logger: logger.child('bareMerger'),
+    store: rootStore.child('bareMerger')
+  })
 
   return {
     sources,
@@ -4028,50 +4028,50 @@ const merger = new(BareMerger as any)({
     additionalEnvelopPlugins,
     get documents() {
       return [
-      {
-        document: DelegateDocument,
-        get rawSDL() {
-          return printWithCache(DelegateDocument);
-        },
-        location: 'DelegateDocument.graphql'
-      },{
-        document: GnarDocument,
-        get rawSDL() {
-          return printWithCache(GnarDocument);
-        },
-        location: 'GnarDocument.graphql'
-      },{
-        document: OgGnarDocument,
-        get rawSDL() {
-          return printWithCache(OgGnarDocument);
-        },
-        location: 'OgGnarDocument.graphql'
-      },{
-        document: ProposalDocument,
-        get rawSDL() {
-          return printWithCache(ProposalDocument);
-        },
-        location: 'ProposalDocument.graphql'
-      },{
-        document: ProposalsDocument,
-        get rawSDL() {
-          return printWithCache(ProposalsDocument);
-        },
-        location: 'ProposalsDocument.graphql'
-      },{
-        document: WalletHdGnarsDocument,
-        get rawSDL() {
-          return printWithCache(WalletHdGnarsDocument);
-        },
-        location: 'WalletHdGnarsDocument.graphql'
-      },{
-        document: WalletOgGnarsDocument,
-        get rawSDL() {
-          return printWithCache(WalletOgGnarsDocument);
-        },
-        location: 'WalletOgGnarsDocument.graphql'
-      }
-    ];
+        {
+          document: DelegateDocument,
+          get rawSDL() {
+            return printWithCache(DelegateDocument);
+          },
+          location: 'DelegateDocument.graphql'
+        }, {
+          document: GnarDocument,
+          get rawSDL() {
+            return printWithCache(GnarDocument);
+          },
+          location: 'GnarDocument.graphql'
+        }, {
+          document: OgGnarDocument,
+          get rawSDL() {
+            return printWithCache(OgGnarDocument);
+          },
+          location: 'OgGnarDocument.graphql'
+        }, {
+          document: ProposalDocument,
+          get rawSDL() {
+            return printWithCache(ProposalDocument);
+          },
+          location: 'ProposalDocument.graphql'
+        }, {
+          document: ProposalsDocument,
+          get rawSDL() {
+            return printWithCache(ProposalsDocument);
+          },
+          location: 'ProposalsDocument.graphql'
+        }, {
+          document: WalletHdGnarsDocument,
+          get rawSDL() {
+            return printWithCache(WalletHdGnarsDocument);
+          },
+          location: 'WalletHdGnarsDocument.graphql'
+        }, {
+          document: WalletOgGnarsDocument,
+          get rawSDL() {
+            return printWithCache(WalletOgGnarsDocument);
+          },
+          location: 'WalletOgGnarsDocument.graphql'
+        }
+      ];
     },
     fetchFn,
   };
@@ -4113,70 +4113,88 @@ export type DelegateQueryVariables = Exact<{
 }>;
 
 
-export type DelegateQuery = { account?: Maybe<(
+export type DelegateQuery = {
+  account?: Maybe<(
     Pick<Account, 'tokenBalance'>
     & { delegate?: Maybe<Pick<Delegate, 'id'>> }
   )>, delegate?: Maybe<(
     Pick<Delegate, 'delegatedVotes' | 'tokenHoldersRepresentedAmount'>
     & { tokenHoldersRepresented: Array<Pick<Account, 'id' | 'tokenBalance'>> }
-  )> };
+  )>
+};
 
 export type GnarQueryVariables = Exact<{
   filter?: InputMaybe<Gnar_filter>;
 }>;
 
 
-export type GnarQuery = { _meta?: Maybe<{ block: Pick<_Block_, 'number' | 'timestamp'> }>, gnarving?: Maybe<Pick<Gnarving, 'auctionDuration' | 'auctionsBetweenGnarvings' | 'auctionsUntilNextGnarving'>>, gnars: Array<(
+export type GnarQuery = {
+  _meta?: Maybe<{ block: Pick<_Block_, 'number' | 'timestamp'> }>, gnarving?: Maybe<Pick<Gnarving, 'auctionDuration' | 'auctionsBetweenGnarvings' | 'auctionsUntilNextGnarving'>>, gnars: Array<(
     Pick<Gnar, 'id' | 'creationTimestamp'>
-    & { owner: Pick<Account, 'id'>, auction?: Maybe<(
-      Pick<Auction, 'settled' | 'startTime' | 'endTime' | 'amount'>
-      & { bidder?: Maybe<Pick<Account, 'id'>>, bids: Array<(
-        Pick<Bid, 'amount' | 'blockTimestamp' | 'id'>
-        & { bidder?: Maybe<Pick<Account, 'id'>> }
-      )> }
-    )>, seed?: Maybe<Pick<Seed, 'accessory' | 'background' | 'body' | 'glasses' | 'head'>> }
-  )>, latestGnar: Array<Pick<Gnar, 'id'>>, latestAuction: Array<Pick<Auction, 'id'>> };
+    & {
+      owner: Pick<Account, 'id'>, auction?: Maybe<(
+        Pick<Auction, 'settled' | 'startTime' | 'endTime' | 'amount'>
+        & {
+          bidder?: Maybe<Pick<Account, 'id'>>, bids: Array<(
+            Pick<Bid, 'amount' | 'blockTimestamp' | 'id'>
+            & { bidder?: Maybe<Pick<Account, 'id'>> }
+          )>
+        }
+      )>, seed?: Maybe<Pick<Seed, 'accessory' | 'background' | 'body' | 'glasses' | 'head'>>
+    }
+  )>, latestGnar: Array<Pick<Gnar, 'id'>>, latestAuction: Array<Pick<Auction, 'id'>>
+};
 
 export type OGGnarQueryVariables = Exact<{
   gnarId: Scalars['ID'];
 }>;
 
 
-export type OGGnarQuery = { _meta?: Maybe<{ block: Pick<_Block_, 'number' | 'timestamp'> }>, gnarving?: Maybe<Pick<Gnarving, 'auctionDuration' | 'auctionsBetweenGnarvings' | 'auctionsUntilNextGnarving'>>, ogAuction?: Maybe<(
+export type OGGnarQuery = {
+  _meta?: Maybe<{ block: Pick<_Block_, 'number' | 'timestamp'> }>, gnarving?: Maybe<Pick<Gnarving, 'auctionDuration' | 'auctionsBetweenGnarvings' | 'auctionsUntilNextGnarving'>>, ogAuction?: Maybe<(
     Pick<OgAuction, 'amount' | 'bidder' | 'id'>
     & { bids: Array<Pick<OgBid, 'amount' | 'bidder' | 'blockTimestamp' | 'id'>>, gnar: Pick<OgGnar, 'accessory' | 'background' | 'body' | 'glasses' | 'head' | 'owner'> }
-  )>, latestGnar: Array<Pick<Gnar, 'id'>>, latestAuction: Array<Pick<Auction, 'id'>> };
+  )>, latestGnar: Array<Pick<Gnar, 'id'>>, latestAuction: Array<Pick<Auction, 'id'>>
+};
 
 export type ProposalQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type ProposalQuery = { _meta?: Maybe<{ block: Pick<_Block_, 'number' | 'timestamp'> }>, proposal?: Maybe<(
+export type ProposalQuery = {
+  _meta?: Maybe<{ block: Pick<_Block_, 'number' | 'timestamp'> }>, proposal?: Maybe<(
     Pick<Proposal, 'id' | 'createdTimestamp' | 'createdBlock' | 'startBlock' | 'endBlock' | 'executionETA' | 'title' | 'description' | 'targets' | 'values' | 'signatures' | 'calldatas' | 'status' | 'forVotes' | 'abstainVotes' | 'againstVotes' | 'quorumVotes' | 'totalSupply' | 'minQuorumVotesBPS' | 'maxQuorumVotesBPS' | 'quorumCoefficient' | 'proposalThreshold'>
-    & { proposer: Pick<Delegate, 'id'>, events: Array<(
-      Pick<ProposalLifecycleEvent, 'kind' | 'blockTimestamp' | 'from' | 'id' | 'txHash'>
-      & { vote?: Maybe<Pick<Vote, 'supportDetailed' | 'reason' | 'votes'>> }
-    )> }
-  )> };
+    & {
+      proposer: Pick<Delegate, 'id'>, events: Array<(
+        Pick<ProposalLifecycleEvent, 'kind' | 'blockTimestamp' | 'from' | 'id' | 'txHash'>
+        & { vote?: Maybe<Pick<Vote, 'supportDetailed' | 'reason' | 'votes'>> }
+      )>
+    }
+  )>
+};
 
 export type ProposalsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProposalsQuery = { _meta?: Maybe<{ block: Pick<_Block_, 'number' | 'timestamp'> }>, proposals: Array<(
+export type ProposalsQuery = {
+  _meta?: Maybe<{ block: Pick<_Block_, 'number' | 'timestamp'> }>, proposals: Array<(
     Pick<Proposal, 'id' | 'createdTimestamp' | 'startBlock' | 'endBlock' | 'executionETA' | 'title' | 'status' | 'forVotes' | 'abstainVotes' | 'againstVotes' | 'quorumVotes' | 'totalSupply' | 'minQuorumVotesBPS' | 'maxQuorumVotesBPS' | 'quorumCoefficient'>
     & { proposer: Pick<Delegate, 'id'> }
-  )> };
+  )>
+};
 
 export type WalletHDGnarsQueryVariables = Exact<{
   owner: Scalars['String'];
 }>;
 
 
-export type WalletHDGnarsQuery = { gnars: Array<(
+export type WalletHDGnarsQuery = {
+  gnars: Array<(
     Pick<Gnar, 'id' | 'hdOwner'>
     & { seed?: Maybe<Pick<Seed, 'accessory' | 'background' | 'body' | 'glasses' | 'head'>> }
-  )> };
+  )>
+};
 
 export type WalletOgGnarsQueryVariables = Exact<{
   owner: Scalars['Bytes'];

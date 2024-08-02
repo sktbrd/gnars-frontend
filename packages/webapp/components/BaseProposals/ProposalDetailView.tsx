@@ -10,7 +10,6 @@ import remarkGfm from "remark-gfm";
 import { MarkdownRenderers } from "./MarkdownRenderers";
 import { useAccount } from "wagmi";
 import { SubGraphProposal } from "./types";
-import { useNnsName } from "@nnsprotocol/resolver-wagmi";
 
 import { MdHowToVote } from "react-icons/md";
 import { set } from "lodash";

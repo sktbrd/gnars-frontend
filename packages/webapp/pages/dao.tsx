@@ -1,4 +1,4 @@
-import { Button, Container, DarkMode, Divider, Heading, HStack, Stack, Text, VStack } from "@chakra-ui/react"
+import { Button, Center, Container, DarkMode, Divider, Heading, HStack, Stack, Switch, Text, VStack } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { DelegateButton } from "components/Governance/Delegation/DelegateButton"
 import { UserVotes } from "components/Governance/Delegation/UserVotes"
@@ -15,6 +15,9 @@ import {
   isFinalized,
   ProposalData,
 } from "../utils/governanceUtils"
+import BaseProposals from "components/BaseProposals/BaseProposals"
+import { useState } from "react"
+import { FaEthereum } from "react-icons/fa"
 
 export default function Proposals() {
   const block = useBlock()
@@ -40,6 +43,10 @@ export default function Proposals() {
         ),
     { keepPreviousData: true }
   )
+
+
+  const [showBaseProposals, setShowBaseProposals] = useState(true);
+
   return (
     <DarkMode>
       <VStack flexGrow={1} w={"full"} color={"chakra-body-text"} spacing={6}>
@@ -54,7 +61,21 @@ export default function Proposals() {
               alignContent={{ base: "center", sm: "end" }}
             >
               <Heading as={"h2"} fontSize="5xl">
-                Proposals
+                <HStack>
+                  <Text>
+                    Proposals
+                  </Text>
+                  <Switch
+                    ml={5}
+                    colorScheme="green"
+                    size="lg"
+                    isChecked={showBaseProposals}
+                    onChange={() => setShowBaseProposals(!showBaseProposals)}
+                  />
+                  {!showBaseProposals &&
+                    <FaEthereum />
+                  }
+                </HStack>
               </Heading>
               <Stack direction={{ base: "column", sm: "row" }} alignItems={{ sm: "center" }}>
                 <UserVotes mr={{ sm: 4 }} fontSize={"xl"} fontWeight={"bold"} />
@@ -64,7 +85,7 @@ export default function Proposals() {
                 <DelegateButton />
               </Stack>
             </Stack>
-            <VStack w={"full"} spacing={4} alignItems={"center"} py={{ base: 4, lg: 20 }} px={{ base: 4, lg: 20 }}>
+            {showBaseProposals ? <BaseProposals /> : <VStack w={"full"} spacing={4} alignItems={"center"} py={{ base: 4, lg: 0 }} px={{ base: 4, lg: 20 }}>
               {isArray(proposals) && (
                 <>
                   {proposals[0].length > 0 && (
@@ -108,13 +129,11 @@ export default function Proposals() {
                   )}
                   {proposals[1].length > 0 && (
                     <>
-                      <HStack w="full" color={"gray.300"} py={10}>
-                        <Divider />
-                        <Heading as={"h3"} fontSize="4xl">
-                          FINALIZED
+                      <Center mb={'10px'}>
+                        <Heading fontSize="4xl">
+                          ETH Proposal History
                         </Heading>
-                        <Divider />
-                      </HStack>
+                      </Center>
                       {proposals[1].map((prop: ProposalData & { effectiveStatus: EffectiveProposalStatus }) => (
                         <Link
                           key={"finalized-prop-" + prop.id}
@@ -148,10 +167,10 @@ export default function Proposals() {
                   {proposals[0].length === 0 && proposals[1].length === 0 && <Text>No proposals yet</Text>}
                 </>
               )}
-            </VStack>
+            </VStack>}
           </VStack>
         </Container>
-      </VStack>
-    </DarkMode>
+      </VStack >
+    </DarkMode >
   )
 }

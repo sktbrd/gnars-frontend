@@ -1,38 +1,19 @@
-import {
-  Button,
-  HStack,
-  Heading,
-  IconButton,
-  Link,
-  SimpleGrid,
-  Spinner,
-  StackProps,
-  Text,
-  VStack,
-  useDisclosure,
-} from "@chakra-ui/react"
+import { Button, Heading, HStack, IconButton, Link, StackProps, Text, useDisclosure, VStack } from "@chakra-ui/react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Londrina_Solid } from "next/font/google"
 import { FC, useEffect, useState } from "react"
-import { FiExternalLink, FiInfo } from "react-icons/fi"
-import { HiExternalLink } from "react-icons/hi"
+import { FiInfo } from "react-icons/fi"
 import { RiAuctionLine } from "react-icons/ri"
 import { OG_GNAR_ADDRESS, TREASURY_ADDRESS, V2_GNAR_ADDRESS } from "../../constants/gnarsDao"
 import { GnarData } from "../../hooks/useGnarData"
 import { useNnsNameWithEnsFallback } from "../../hooks/useNnsNameWithEnsFallback"
-import { is10thGnar, shortAddress } from "../../utils"
-import { EtherscanIcon, OGNogglesIcon, ShredIcon } from "../Icons"
-import { AuctionStatus } from "./AuctionStatus"
-import { BidForGnar } from "./BidForGnar"
-import { BiddingAndSettlingInfo } from "./BiddingAndSettlingInfo"
+import { is10thGnar } from "../../utils"
+import { EtherscanIcon } from "../Icons"
 import { BidsTable } from "./BidsTable"
-import { GnarNavigation } from "./GnarNavigation"
-import { GnarvingTracker } from "./GnarvingTracker"
-import { SettleAuctionButton } from "./SettleAuctionButton"
 
 const londrinaSolid = Londrina_Solid({
   weight: "400",
-  subsets: ["latin"],
+  subsets: ["latin"]
 })
 
 interface GnarInfoProps extends StackProps {
@@ -74,7 +55,7 @@ export const GnarInfo: FC<GnarInfoProps> = ({ isOg, gnarData, ...props }: GnarIn
   const isBurned = !!gnarData.gnar.auction && auctionEnded && !winner
   const isClaimedGnar = !isTreasuryGnar && !gnarData.gnar.auction
   return (
-    <VStack w={"full"} alignItems={"start"} spacing={6} maxW={{ base: "full", lg: "500px", xl: "xl" }} {...props}>
+    <VStack w={"full"} spacing={6} maxW={{ base: "full", lg: "500px", xl: "xl" }} {...props}>
       <Heading>Under Construction</Heading>
 
       <Heading as="h3" size={"lg"}>
@@ -82,7 +63,7 @@ export const GnarInfo: FC<GnarInfoProps> = ({ isOg, gnarData, ...props }: GnarIn
         <Link href="https://nouns.build/dao/base/0x880Fb3Cf5c6Cc2d7DFC13a993E839a9411200C17" color={"#fce464"}>
           Nouns Builder
         </Link>{" "}
-        in the mean time
+        in the meantime
       </Heading>
       {/*
       <SimpleGrid
@@ -136,7 +117,7 @@ export const GnarInfo: FC<GnarInfoProps> = ({ isOg, gnarData, ...props }: GnarIn
               <FiInfo
                 style={{
                   verticalAlign: "text-bottom",
-                  display: "inline",
+                  display: "inline"
                 }}
               />{" "}
               {isTreasuryGnar && (
